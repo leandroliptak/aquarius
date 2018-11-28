@@ -17,7 +17,5 @@ tagfile = open("taglist")
 taglist = filter(lambda tag: tag and tag[0] != '#', tagfile.read().split("\n"))
 tagfile.close()
 
-print taglist
-
 bot = InstaBot(username, password, tag_list=taglist, log_mod=1)
 bot.lean_mod()
