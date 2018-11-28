@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
-from pudb import set_trace as bp
+#from pudb import set_trace as bp
 from .unfollow_protocol import unfollow_protocol
 from .userinfo import UserInfo
 import atexit
@@ -755,7 +755,7 @@ class InstaBot:
             self.write_log("Doing auto-unfollow...")
             self.lean_auto_unfollow()
 
-            time.sleep(150) # Esperamos 2' 30" para el próximo follow
+            time.sleep(120)
 
     def lean_like(self, media):
         media_id = media['node']['id']
