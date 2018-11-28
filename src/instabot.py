@@ -721,6 +721,9 @@ class InstaBot:
                                               (1, self.max_like_for_one_tag))
 
     def lean_mod(self):
+        if not self.login_status:
+            return
+
         while True:
             while len(self.media_by_tag) == 0:
                 self.get_media_id_by_tag(random.choice(self.tag_list))
