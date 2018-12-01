@@ -315,6 +315,7 @@ class InstaBot:
                 self.login_status = False
                 self.write_log('Login error! Check your login data!')
         else:
+            self.login_status = False
             self.write_log('Login error! Connection error!')
 
     def logout(self):
@@ -721,10 +722,14 @@ class InstaBot:
                                               (1, self.max_like_for_one_tag))
 
     def lean_mod(self):
-        if not self.login_status:
-            return
-
         while True:
+            sleep_time = 60
+            while not self.login_status:
+                self.write_log("¡Logout! Sleeping %i seconds before log in" % (sleep_time))
+                time.sleep(sleep_time)
+                self.login()
+                sleep_time = sleep_time * 2
+
             while len(self.media_by_tag) == 0:
                 self.get_media_id_by_tag(random.choice(self.tag_list))
                 self.write_log("Media count: %i" % (len(self.media_by_tag)))
@@ -741,21 +746,21 @@ class InstaBot:
             if self.follow(owner_id) != False:
                 self.bot_follow_list.append([owner_id, time.time()])
 
-                if media["node"]["edge_liked_by"]["count"] < 50:
-                    time.sleep(1)
-                    self.lean_like(media)
-                if media["node"]["edge_media_to_comment"]["count"] < 10:
-                    time.sleep(1)
-                    comment = self.comment(media['node']['id'], "❤")
-                    if comment != 0:
-                        self.write_log("  .. Returned code %i" % (comment.status_code))
+                #if media["node"]["edge_liked_by"]["count"] < 50:
+                #    time.sleep(1)
+                #    self.lean_like(media)
+                #if media["node"]["edge_media_to_comment"]["count"] < 10:
+                #    time.sleep(1)
+                #    comment = self.comment(media['node']['id'], "❤")
+                #    if comment != 0:
+                #        self.write_log("  .. Returned code %i" % (comment.status_code))
 
-            time.sleep(3)
+            time.sleep(random.choice(range(2,5)))
 
             self.write_log("Doing auto-unfollow...")
             self.lean_auto_unfollow()
 
-            time.sleep(120)
+            time.sleep(120 + random.choice(range(1,30)))
 
     def lean_like(self, media):
         media_id = media['node']['id']
