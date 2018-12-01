@@ -746,21 +746,21 @@ class InstaBot:
             if self.follow(owner_id) != False:
                 self.bot_follow_list.append([owner_id, time.time()])
 
-                #if media["node"]["edge_liked_by"]["count"] < 50:
-                #    time.sleep(1)
-                #    self.lean_like(media)
-                #if media["node"]["edge_media_to_comment"]["count"] < 10:
-                #    time.sleep(1)
-                #    comment = self.comment(media['node']['id'], "❤")
-                #    if comment != 0:
-                #        self.write_log("  .. Returned code %i" % (comment.status_code))
+                if media["node"]["edge_liked_by"]["count"] < 10:
+                    time.sleep(1)
+                    self.lean_like(media)
+                elif media["node"]["edge_media_to_comment"]["count"] < 10:
+                    time.sleep(1)
+                    comment = self.comment(media['node']['id'], "❤")
+                    if comment != 0:
+                        self.write_log("  .. Returned code %i" % (comment.status_code))
 
-            time.sleep(random.choice(range(2,5)))
+            time.sleep(random.randint(2,5))
 
             self.write_log("Doing auto-unfollow...")
             self.lean_auto_unfollow()
 
-            time.sleep(120 + random.choice(range(1,30)))
+            time.sleep(120 + random.randint(1,30))
 
     def lean_like(self, media):
         media_id = media['node']['id']
