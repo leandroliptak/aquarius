@@ -130,7 +130,7 @@ class InstaBot:
                  media_max_like=50,
                  media_min_like=0,
                  follow_per_day=0,
-                 follow_time=5 * 60 * 60,
+                 follow_time=12 * 60 * 60,
                  unfollow_per_day=0,
                  start_at_h=0,
                  start_at_m=0,
@@ -720,6 +720,41 @@ class InstaBot:
                 self.get_media_id_by_tag(random.choice(self.tag_list))
                 self.like_all_exist_media(random.randint \
                                               (1, self.max_like_for_one_tag))
+
+    def follow_from_growbot_whitelist(self, user_file):
+        f = file(user_file)
+        users = json.loads(f.read())
+        f.close()
+
+        for user in users:
+            sleep_time = 60
+            while not self.login_status:
+                self.write_log("¡Logout! Sleeping %i seconds before log in" % (sleep_time))
+                time.sleep(sleep_time)
+                self.login()
+                sleep_time = sleep_time * 2
+
+            if user["followed_by_viewer"] or user["requested_by_viewer"]:
+                continue
+
+            owner_id = user["id"]
+            if check_already_followed(self, user_id=owner_id) == 1:
+                continue
+
+            self.write_log("Trying to follow: %s" % (owner_id))
+            r_follow = self.follow(owner_id)
+            if r_follow != False:
+                self.bot_follow_list.append([owner_id, time.time()])
+            else:
+                self.write_log("  .. Returned code %i" % (r_follow.status_code))
+
+            time.sleep(random.randint(2,5))
+
+            self.write_log("Doing auto-unfollow...")
+            self.lean_auto_unfollow()
+
+            time.sleep(60 + random.randint(0,30))
+
 
     def lean_mod(self):
         while True:
