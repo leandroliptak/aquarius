@@ -4,7 +4,7 @@ import os
 import time
 import sys
 
-	from src import InstaBot
+from src import InstaBot
 
 username = sys.argv[1]
 password = sys.argv[2]
