@@ -784,6 +784,7 @@ class InstaBot:
                 self.bot_follow_list.append([owner_id, time.time()])
                 if r_follow.status_code != 200:
                     self.write_log("  .. Returned code %i" % (r_follow.status_code))
+                    time.sleep(10 * 60)
 
             time.sleep(random.randint(2,5))
 
