@@ -745,6 +745,7 @@ class InstaBot:
             self.write_log("Trying to follow: %s" % (owner_id))
             r_follow = self.follow(owner_id)
             if r_follow != False:
+                self.write_log("  .. Returned code %i" % (r_follow.status_code))
                 if r_follow.status_code == 200:
                     self.bot_follow_list.append([owner_id, time.time()])
 
