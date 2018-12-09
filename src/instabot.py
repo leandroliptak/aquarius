@@ -743,17 +743,27 @@ class InstaBot:
                 continue
 
             self.write_log("Trying to follow: %s" % (owner_id))
-            if self.follow(owner_id) != False:
-                self.bot_follow_list.append([owner_id, time.time()])
+            r_follow = self.follow(owner_id)
+            if r_follow != False:
+                if r_follow.status_code == 200:
+                    self.bot_follow_list.append([owner_id, time.time()])
 
-                if media["node"]["edge_liked_by"]["count"] < 10:
-                    time.sleep(1)
-                    self.lean_like(media)
-                elif media["node"]["edge_media_to_comment"]["count"] < 10:
-                    time.sleep(1)
-                    comment = self.comment(media['node']['id'], "❤")
-                    if comment != 0:
-                        self.write_log("  .. Returned code %i" % (comment.status_code))
+                    if media["node"]["edge_liked_by"]["count"] < 10:
+                        time.sleep(1)
+                        self.lean_like(media)
+                    elif media["node"]["edge_media_to_comment"]["count"] < 10:
+                        time.sleep(1)
+                        comment = self.comment(media['node']['id'], "💫")
+                        if comment != 0:
+                            self.write_log("  .. Returned code %i" % (comment.status_code))
+                elif r_follow.status_code == 400:
+                    # Soft limit, esperamos 10 minutos
+                    time.sleep(10 * 60)
+                elif r_follow.status_code == 403:
+                    # Hard limit, logout y esperamos 2 horas (mínimo)
+                    self.logout()
+                    time.sleep(2 * 60 * 60) 
+                    continue
 
             time.sleep(random.randint(2,5))
 
