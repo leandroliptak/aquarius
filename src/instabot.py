@@ -437,18 +437,19 @@ class InstaBot:
 
     def get_username_by_user_id(self, user_id):
         """ Get username by user_id """
-        if self.login_status:
-            try:
-                url_info = self.api_user_detail % user_id
-                r = self.s.get(url_info, headers="")
-                all_data = json.loads(r.text)
-                username = all_data["user"]["username"]
-                return username
-            except:
-                logging.exception("Except on get_username_by_user_id")
-                return False
-        else:
-            return False
+        return "."
+#        if self.login_status:
+#            try:
+#                url_info = self.api_user_detail % user_id
+#                r = self.s.get(url_info, headers="")
+#                all_data = json.loads(r.text)
+#                username = all_data["user"]["username"]
+#                return username
+#            except:
+#                logging.exception("Except on get_username_by_user_id")
+#                return False
+#        else:
+#            return False
 
     def get_userinfo_by_name(self, username):
         """ Get user info by name """
@@ -721,41 +722,6 @@ class InstaBot:
                 self.like_all_exist_media(random.randint \
                                               (1, self.max_like_for_one_tag))
 
-    def follow_from_growbot_whitelist(self, user_file):
-        f = file(user_file)
-        users = json.loads(f.read())
-        f.close()
-
-        for user in users:
-            sleep_time = 60
-            while not self.login_status:
-                self.write_log("¡Logout! Sleeping %i seconds before log in" % (sleep_time))
-                time.sleep(sleep_time)
-                self.login()
-                sleep_time = sleep_time * 2
-
-            if user["followed_by_viewer"] or user["requested_by_viewer"]:
-                continue
-
-            owner_id = user["id"]
-            if check_already_followed(self, user_id=owner_id) == 1:
-                continue
-
-            self.write_log("Trying to follow: %s" % (owner_id))
-            r_follow = self.follow(owner_id)
-            if r_follow != False:
-                self.bot_follow_list.append([owner_id, time.time()])
-            else:
-                self.write_log("  .. Returned code %i" % (r_follow.status_code))
-
-            time.sleep(random.randint(2,5))
-
-            self.write_log("Doing auto-unfollow...")
-            self.lean_auto_unfollow()
-
-            time.sleep(60 + random.randint(0,30))
-
-
     def lean_mod(self):
         while True:
             sleep_time = 60
@@ -778,19 +744,26 @@ class InstaBot:
                 continue
 
             self.write_log("Trying to follow: %s" % (owner_id))
-
             r_follow = self.follow(owner_id)
             if r_follow != False:
-                self.bot_follow_list.append([owner_id, time.time()])
-                if r_follow.status_code != 200:
-                    self.write_log("  .. Returned code %i" % (r_follow.status_code))
+                self.write_log("  .. Returned code %i" % (r_follow.status_code))
+                if r_follow.status_code == 200:
+                    self.bot_follow_list.append([owner_id, time.time()])
+                elif r_follow.status_code == 400:
+                    # Soft limit, esperamos 10 minutos
+                    time.sleep(10 * 60)
+                elif r_follow.status_code == 403:
+                    # Hard limit, logout y esperamos 2 horas (mínimo)
+                    self.logout()
+                    time.sleep(2 * 60 * 60) 
+                    continue
 
             time.sleep(random.randint(2,5))
 
             self.write_log("Doing auto-unfollow...")
             self.lean_auto_unfollow()
 
-            time.sleep(45 + random.randint(1,30))
+            time.sleep(60 + random.randint(1,30))
 
     def lean_like(self, media):
         media_id = media['node']['id']
