@@ -130,7 +130,7 @@ class InstaBot:
                  media_max_like=50,
                  media_min_like=0,
                  follow_per_day=0,
-                 follow_time=12 * 60 * 60,
+                 follow_time=5 * 60 * 60,
                  unfollow_per_day=0,
                  start_at_h=0,
                  start_at_m=0,
@@ -749,6 +749,15 @@ class InstaBot:
                 self.write_log("  .. Returned code %i" % (r_follow.status_code))
                 if r_follow.status_code == 200:
                     self.bot_follow_list.append([owner_id, time.time()])
+
+                    if media["node"]["edge_liked_by"]["count"] < 10:
+                        time.sleep(1)
+                        self.lean_like(media)
+                    elif media["node"]["edge_media_to_comment"]["count"] < 10:
+                        time.sleep(1)
+                        comment = self.comment(media['node']['id'], "💫")
+                        if comment != 0:
+                            self.write_log("  .. Returned code %i" % (comment.status_code))
                 elif r_follow.status_code == 400:
                     # Soft limit, esperamos 10 minutos
                     time.sleep(10 * 60)
@@ -763,7 +772,7 @@ class InstaBot:
             self.write_log("Doing auto-unfollow...")
             self.lean_auto_unfollow()
 
-            time.sleep(60 + random.randint(1,30))
+            time.sleep(120 + random.randint(1,30))
 
     def lean_like(self, media):
         media_id = media['node']['id']
