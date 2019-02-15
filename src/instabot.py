@@ -755,7 +755,7 @@ class InstaBot:
                         self.lean_like(media)
                     elif media["node"]["edge_media_to_comment"]["count"] < 10:
                         time.sleep(1)
-                        comment = self.comment(media['node']['id'], "💫")
+                        comment = self.comment(media['node']['id'], "✨")
                         if comment != 0:
                             self.write_log("  .. Returned code %i" % (comment.status_code))
                 elif r_follow.status_code == 400:
