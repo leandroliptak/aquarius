@@ -771,6 +771,8 @@ class InstaBot:
 
             self.write_log("Doing auto-unfollow...")
             self.lean_auto_unfollow()
+            if random.randint(0,1):
+                self.lean_auto_unfollow() # Unfollow de otro
 
             time.sleep(120 + random.randint(1,30))
 
