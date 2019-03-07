@@ -22,7 +22,7 @@ from sql_updates import get_usernames_first, get_usernames
 from sql_updates import get_username_random, get_username_to_unfollow_random
 from sql_updates import check_and_insert_user_agent
 
-str_message = "Hola %s! Como estas?\n\nTe escribo porque creo que puede interesarte la astrologia, como herramienta de autoconocimiento y autodescubrimiento de nuestras potencialidades internas. Por ese motivo, te cuento que desde Venus Saturno estaremos dictamos varios cursos, introductorios y avanzados. En Abril comienza una formacion de 9 meses (anual) con un enfoque practico y orientado a la transformacion personal.\n\nTodos los cursos los dicto yo, Leandro. Soy astrologo y coach en PNL, y escribi el libro Curso de Astrologia Espiritual.\n\nEspero no molestar con este mensaje, y de ser asi te pido disculpas. Si quisieras mas informacion, te invito a revisar nuestro perfil, y podes dejarnos un e-mail para enterarte de las novedades. En el enlace que hay en la biografia podras encontrar acceso a dos clases en video del Taller Raiz, que es el curso a distancia que dictamos. Estas clases son gratis, sin cargo, para que puedas conocer como transmitimos este lenguaje.\n\nUn saludo afectuoso!"
+str_message = "Hola %s! Como estas?\n\nTe escribo porque creo que puede interesarte la astrologia, como herramienta de autoconocimiento y autodescubrimiento de nuestras potencialidades internas.\n\nPor ese motivo, quiero invitarte a que veas dos clases gratuitas de un curso online que dicto yo, Leandro, fundador de Venus Saturno. Es un curso introductorio pero muy profundo al lenguaje astrologico.\n\nPodes acceder desde el enlace que figura en nuestro perfil de IG!\n\n\nEspero no molestar con este mensaje, y de ser asi te pido disculpas.\n\nUn saludo afectuoso!"
 
 class Bot:
     def __init__(self):
@@ -88,7 +88,7 @@ except IOError:
 
 gender_detector = gender.Detector()
 
-reference_account = "the.weatherman" #"astro_logiando" #"lu.gaitan"
+reference_account = "lu.gaitan" #"the.weatherman" #"astro_logiando"
 
 api.searchUsername(reference_account)
 userid = api.LastJson["user"]["pk"]
