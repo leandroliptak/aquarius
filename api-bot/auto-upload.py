@@ -24,5 +24,5 @@ if __name__ == '__main__':
 
     while True:
         for photo in os.listdir("uploads"):
-            api.uploadPhoto(photo, story=True)
+            api.uploadPhoto("uploads/" + photo, story=True)
         time.sleep(24 * 60 * 60)
